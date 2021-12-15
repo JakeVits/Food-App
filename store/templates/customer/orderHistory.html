@@ -26,14 +26,13 @@
       box-shadow: 0 5px #666;
       transform: translateY(4px);
     }
-    </style>
-          <nav aria-label="breadcrumb" class="main-breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Order History List</li>
-            </ol>
-          </nav><hr>
-
+</style>
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Order History List</li>
+  </ol>
+</nav><hr>
 <script>
 function goBack() {
   window.history.back();
@@ -50,21 +49,17 @@ function goBack() {
 					<th>Quantity</th>
 					<th>Price</th>
 					<th>Delivery Date</th>
-
 				</tr>
-
 				{% for order in orders %}
-
-				<tr>
-					<td>{{order.transaction_id}}</td>
-					<td>{{order.date_ordered|date}}</td>
-					<td>{{order.product.seller}}</td>
-					<td>{{order.quantity}}</td>
-					<td>{{order.product.price|floatformat:0}} ฿</td>
-					<td>{{order.product.date_delivery|date}}</td>
-				</tr>
+            <tr>
+              <td>{{order.transaction_id}}</td>
+              <td>{{order.date_ordered|date}}</td>
+              <td>{{order.product.seller}}</td>
+              <td>{{order.customer.name }}</td>
+              <td>{{order.product.price|floatformat:0}} ฿</td>
+              <td>{{order.product.date_delivery|date}}</td>
+            </tr>
 				{% endfor %}
-
 			</table>
 		</div>
 	</div>

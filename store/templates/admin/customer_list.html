@@ -1,0 +1,82 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<title>foodApp: View Customer</title>
+
+<style>
+    .button {
+      display: inline-block;
+      padding: 3px 20px;
+      font-size: 24px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      outline: none;
+      color: #fff;
+      background-color: #050101;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 9px #999;
+    }
+    
+    .button:hover {background-color: #a5aca5}
+    
+    .button:active {
+      background-color: #121312;
+      box-shadow: 0 5px #666;
+      transform: translateY(4px);
+    }
+</style>
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Customer List</li>
+  </ol>
+</nav><hr>
+
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+					<th>Name</th>
+					<th>Email</th>
+					<th>Phone</th>
+					<th>Gender</th>
+					<th>Date Created</th>
+					<th>Details</th>
+					<th>Update</th>
+					<th>Remove</th>
+				</tr>
+				{% for customer in customers %}
+            <tr>
+              <td>{{customer.user.username}}</td>
+              <td>{{customer.user.email}}</td>
+              {% if customer.phone %}
+                  <td>{{customer.phone}}</td>
+              {% else %}
+                  <td>--------</td>
+              {% endif %}
+              {% if customer.gender %}
+                  <td>{{customer.gender}}</td>
+              {% else %}
+                  <td>--------</td>
+              {% endif %}
+              <td>{{customer.date_created}}</td>
+              <td><a class="btn btn-sm btn-info" href="{% url 'customer-details' customer.id %}">View</a></td>
+              <td><a class="btn btn-sm btn-primary" href="{% url 'update-customer' customer.id %}">Update</a></td>       
+              <td><a class="btn btn-sm btn-danger" href="{% url 'delete-customer' customer.id %}">Delete</a></td>
+            </tr>
+				{% endfor %}
+        <a class="btn btn-primary btn-block text-uppercase" href="{% url 'add-customer' %}">Add Customer</a>
+        <hr>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+{% endblock content %}

@@ -1,0 +1,48 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<title>foodApp: Customer Edit</title>
+<script>
+    function goBack() {
+      window.history.back();
+    }
+</script>
+<style>
+	.profile-pic{
+		max-width: 200px;
+		max-height:200px;
+		margin: 0 auto;
+		border-radius: 50%;
+	}
+</style>
+<br>
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
+	  <li class="breadcrumb-item active" aria-current="page">Customer List</li>
+	  <li class="breadcrumb-item active" aria-current="page">Customer Profile</li>
+      <li class="breadcrumb-item active" aria-current="page">Update Customer</li>
+    </ol>
+  </nav>
+<div class="row">
+    
+	<div class="col-md-3">
+		<div class="card card-body">
+			<h4 style="text-align: center">Customer: Edit</h4>
+			<hr>
+			<img class="profile-pic" src="{{customer.profile_image.url}}" alt=":(" width="150"><br>
+			<button class="btn btn-outline-primary">Change Password</button>
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div class="card card-body">
+			<form method="POST" action="" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{form.as_p}}	
+				<input class="btn btn-primary" type="submit" name="Update Information">
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -130,7 +130,20 @@
 							</div>
 					</form>
 				</div>
-				{{form.error}}
+				{% if messages %}
+					{% for message in messages %}
+						{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}			
+							<div class="alert alert-success" role="alert">
+								<p style="text-align: center;">{{ message }}</p>
+							</div>			
+						{% else %}
+							<div style="text-align: center;" class="alert alert-warning" role="alert">
+								{{ form.username.errors | striptags }}
+								{{ form.password2.errors | striptags }}
+							</div>
+						{% endif %}
+					{% endfor %}
+				{% endif %}			
                 <div class="mt-2">
 					<div class="d-flex justify-content-center links">
 						Already have an account ? <a href="{% url 'login' %}" class="ml-2">Login</a>
@@ -145,16 +158,14 @@
 	*/
 	
 	//Query All input fields
-	var form_fields = document.getElementsByTagName('input')
-	form_fields[1].placeholder='Username..';
-	form_fields[2].placeholder='Email..';
-	form_fields[3].placeholder='Enter password...';
-	form_fields[4].placeholder='Re-enter Password...';
-	
-	
-	for (var field in form_fields){	
-	form_fields[field].className += ' form-control'
-	}
+		var form_fields = document.getElementsByTagName('input')
+		form_fields[1].placeholder='Username..';
+		form_fields[2].placeholder='Email..';
+		form_fields[3].placeholder='Enter password...';
+		form_fields[4].placeholder='Re-enter Password...';	
+		for (var field in form_fields){	
+			form_fields[field].className += ' form-control'
+		}
 	</script>
 </body>
 </html>

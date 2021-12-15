@@ -63,12 +63,13 @@ function goBack() {
 					<td>{{product.date_added}}</td>
           <td>{{product.date_closed|date}}</td>
 					<td>{{product.date_delivery|date}}</td>
-          <td><a class="btn btn-sm btn-info" href="{% url 'product' product.id %}">View</a></td>
-
+          <td><a class="btn btn-sm btn-info" href="{% url 'add_product' product.id %}">View</a></td>
+          {% comment %}
 					<td><a class="btn btn-sm btn-danger" href="{% url 'deleteProduct' product.id %}">Delete</a></td>
+          {% endcomment %}
 				</tr>
 				{% endfor %}
-        <a class="btn btn-primary btn-block text-uppercase" href="{% url 'addProduct' %}">Add Product</a>
+        
         <hr>
 			</table>
 		</div>
@@ -77,3 +78,4 @@ function goBack() {
 
 
 {% endblock content %}
+<a class="btn btn-primary btn-block text-uppercase" href="{% url 'addProduct' %}">Add Product</a>

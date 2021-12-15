@@ -24,11 +24,11 @@
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src="{{request.user.customer.profile_image.url}}" alt="Admin" class="rounded-circle" width="150">
+                    <img src="{{user.customer.profile_image.url}}" alt="Admin" class="rounded-circle" width="150">
                     <div class="mt-3">
                       <h4>{{customer.name}}</h4>
                       <p class="text-secondary mb-1">{{customer.phone}}</p>
-                      <p class="text-muted font-size-sm">{{customer.email}}</p>
+                      <p class="text-muted font-size-sm">{{customer.user.email}}</p>
                       <a class="btn btn-primary" href="{% url 'editProfile' %}">Update</a>
                       <button class="btn btn-outline-primary">Change Password</button>
                     </div>
@@ -44,7 +44,7 @@
                       <h6 class="mb-0">Name</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {{customer.name}}
+                        {{customer.user.username}}
                     </div>
                   </div>
                   <hr>
@@ -62,7 +62,7 @@
                       <h6 class="mb-0">Email</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {{customer.email}}
+                        {{customer.user.email}}
                     </div>
                   </div>
                   <hr>
