@@ -1,6 +1,6 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block content %}
+{% block create_customer %}
 <style>
     .tm-product-img-dummy {
     max-width: 100%;
@@ -31,6 +31,13 @@
 }
 </style>
 
+<script>
+function goBack() {
+window.history.back();
+}
+</script>
+<title>foodApp: Add Product</title>
+<br>
 <nav aria-label="breadcrumb" class="main-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
@@ -38,14 +45,20 @@
     <li class="breadcrumb-item active" aria-current="page">Add Customer</li>
   </ol>
 </nav><hr>
-
-<script>
-function goBack() {
-window.history.back();
-}
-</script>
-<title>foodApp: Add Product</title>
 <div class="container tm-mt-big tm-mb-big">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}			
+        <div class="alert alert-success" role="alert">
+          <p style="text-align: center;">{{ message }}</p>
+        </div>			
+      {% else %}
+        <div style="text-align: center;" class="alert alert-warning" role="alert">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
     <div class="row">
       <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
         <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
@@ -56,42 +69,30 @@ window.history.back();
           </div>
           <div class="row tm-edit-product-row">
             <div class="col-xl-6 col-lg-6 col-md-12">
-                <form method='POST' action="" enctype="multipart/form-data">
+                <form method='POST' enctype="multipart/form-data">
                     {% csrf_token %}
-                <div class="row">
-                    <div class="form-group mb-3 col-xs-12 col-sm-6">
-                            <label
-                            for="name"
-                            >Customer Name:
-                          </label>
-                            <div class="input-group mb-2">
-                                {{form.username}}
-                            </div>
-                            <label
-                            for="name"
-                            >Customer Email:
-                          </label>
-                            <div class="input-group mb-2">
-                                {{form.email}}
-                            </div>
-                            <label
-                            for="name"
-                            >Customer Password:
-                          </label>
-                            <div class="input-group mb-2">
-                                {{form.password1}}
-                            </div>
-                            <label
-                            for="name"
-                            >Re-Enter Password:
-                          </label>
-                            <div class="input-group mb-2">
-                                {{form.password2}}
-                            </div>
-                      </div>
-                    </div>
+                    <div class="row">
+                        <div class="form-group mb-3 col-xs-12 col-sm-6">
+                            <label for="name">Customer Name:</label>
+                                <div class="input-group mb-2">
+                                    {{form.username}}
+                                </div>
+                            <label for="name">Customer Email:</label>
+                                <div class="input-group mb-2">
+                                    {{form.email}}
+                                </div>
+                            <label for="name">Customer Password:</label>
+                                <div class="input-group mb-2">
+                                    {{form.password1}}
+                                </div>
+                            <label for="name">Re-Enter Password:</label>
+                                <div class="input-group mb-2">
+                                    {{form.password2}}
+                                </div>
+                          </div>
+                        </div>
+                     </div>
                 </div>
-            </div>
 
             <div class="col-12">
               <input type="submit" class="btn btn-primary btn-block text-uppercase" name="Submit">
@@ -102,7 +103,4 @@ window.history.back();
       </div>
     </div>
   </div>
-
-
-
-{% endblock content %}
+{% endblock %}

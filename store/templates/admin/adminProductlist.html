@@ -1,6 +1,6 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block content %}
+{% block list_product %}
 
 <title>foodApp: View Product</title>
 <style>
@@ -27,18 +27,21 @@
       transform: translateY(4px);
     }
     </style>
-          <nav aria-label="breadcrumb" class="main-breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Product List</li>
-            </ol>
-          </nav><hr>
-
+          
 <script>
-function goBack() {
-  window.history.back();
-}
+  function goBack() {
+    window.history.back();
+  }
 </script>
+<br>
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Product List</li>
+  </ol>
+</nav><hr>
+
+<a class="btn btn-primary btn-block text-uppercase" href="{% url 'create-product' %}">Add Product</a>
 <div class="row">
 	<div class="col-md">
 		<div class="card card-body">
@@ -49,25 +52,21 @@ function goBack() {
           <th>Seller</th>
 					<th>Date Added</th>
 					<th>Date Closed</th>  
-					<th>Date Delivery</th>
-					<th>Details</th>
+					<th>View</th>
+          <th>Update</th>
 					<th>Remove</th>
 				</tr>
-
 				{% for product in products %}
-
-				<tr>
-					<td>{{product.name}}</td>
-					<td>{{product.price|floatformat:0}} ฿</td>
-					<td>{{product.seller}}</td>
-					<td>{{product.date_added}}</td>
-          <td>{{product.date_closed|date}}</td>
-					<td>{{product.date_delivery|date}}</td>
-          <td><a class="btn btn-sm btn-info" href="{% url 'add_product' product.id %}">View</a></td>
-          {% comment %}
-					<td><a class="btn btn-sm btn-danger" href="{% url 'deleteProduct' product.id %}">Delete</a></td>
-          {% endcomment %}
-				</tr>
+          <tr>
+            <td>{{product.name}}</td>
+            <td>{{product.price|floatformat:0}} ฿</td>
+            <td>{{product.seller}}</td>
+            <td>{{product.created_date}}</td>
+            <td>{{product.closed_date}}</td>
+            <td><a class="btn btn-sm btn-info" href="{% url 'view-product' product.id %}">View</a></td>
+            <td><a class="btn btn-sm btn-primary" href="{% url 'update-product' product.id %}">Update</a></td>
+            <td><a class="btn btn-sm btn-danger" href="{% url 'delete-product' product.id %}">Delete</a></td>            
+          </tr>
 				{% endfor %}
         
         <hr>
@@ -75,7 +74,4 @@ function goBack() {
 		</div>
 	</div>
 </div>
-
-
-{% endblock content %}
-<a class="btn btn-primary btn-block text-uppercase" href="{% url 'addProduct' %}">Add Product</a>
+{% endblock %}

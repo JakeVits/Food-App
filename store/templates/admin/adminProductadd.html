@@ -1,6 +1,6 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block content %}
+{% block create_product%}
 <style>
     .tm-product-img-dummy {
     max-width: 100%;
@@ -30,20 +30,33 @@
     background-color: rgb(217, 215, 226);
 }
 </style>
+<br>
 <nav aria-label="breadcrumb" class="main-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
     <li class="breadcrumb-item active" aria-current="page">Product List</li>
     <li class="breadcrumb-item active" aria-current="page">Add Product</li>
-
   </ol>
 </nav><hr>
 
 <script>
-function goBack() {
-window.history.back();
-}
+    function goBack() {
+        window.history.back();
+    }
 </script>
+{% if messages %}
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}			
+            <div class="alert alert-success" role="alert">
+                <p style="text-align: center;">{{ message }}</p>
+            </div>			
+        {% else %}
+            <div style="text-align: center;" class="alert alert-warning" role="alert">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
 <title>foodApp: Add Product</title>
 <div class="container tm-mt-big tm-mb-big">
     <div class="row">
@@ -60,10 +73,10 @@ window.history.back();
                       {% csrf_token %}
                       <div class="row">
                           <div class="form-group mb-3 col-xs-12 col-sm-6">
-                                <label for="name">Product Name:</label>
-                                <div class="input-group mb-2">
-                                    {{form.name}}
-                                </div>
+                              <label for="name">Product Name:</label>
+                              <div class="input-group mb-2">
+                                  {{form.name}}
+                              </div>
                           </div>
                           <div class="form-group mb-3 col-xs-12 col-sm-6">
                               <label for="name">Seller:</label>
@@ -75,33 +88,27 @@ window.history.back();
                       <div class="form-group mb-3">
                           <label for="name">Price:</label>
                           <div class="input-group mb-2">
-                              {{form.price}}
+                              <input name="price" type="number" min="1">
                           </div>
-                      </div>              
+                      </div>    
+                      <div class="form-group mb-3">
+                          {{form.closed_date.label}}
+                          <div class="input-group mb-2">
+                              <input name="closed_date" type="date">
+                          </div>
+                      </div>  
+                      <div class="form-group mb-3">
+                        {{form.product_image.label}} 
+                        <div class="input-group mb-2">
+                            {{form.product_image}}
+                        </div>
+                      </div>                  
                       <div class="form-group mb-3">
                           <label for="name">Description:</label>
                           <div class="input-group mb-2">
                               {{form.description}}
                           </div>
-                      </div>
-                      <!-- <div class="row">
-                          <div class="form-group mb-3 col-xs-12 col-sm-6">
-                              <label for="name">Date Delivery<br>(YYYY-MM-DD):</label>
-                                <div class="input-group mb-2">
-                                    {{form.date_delivery}}
-                                </div>
-                          </div>
-                          <div class="form-group mb-3 col-xs-12 col-sm-6">
-                              <label for="name">Date Closed<br>(YYYY-MM-DD):</label>
-                              <div class="input-group mb-2">
-                                  {{form.date_closed}}
-                              </div>
-                          </div>
-                      </div>        -->
-                  </div>
-                  <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-                      <label>Product Image:</label>
-                      <input required name="images" type="file" multiple class="form-control-file">
+                      </div>  
                   </div>
                   <div class="col-12">
                       <input type="submit" class="btn btn-primary btn-block text-uppercase" name="Submit">
@@ -112,4 +119,4 @@ window.history.back();
       </div>
     </div>
   </div>
-{% endblock content %}
+{% endblock %}

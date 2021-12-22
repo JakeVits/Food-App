@@ -1,6 +1,6 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block content %}
+{% block update_product %}
 
 <title>foodApp: Update Product</title>
 <script>
@@ -32,20 +32,30 @@
 		<div class="card card-body">
 			<h4 style="text-align: center">Update Product</h4>
 			<hr>
-			<img class="profile-pic" src="{{product.imageURL}}" >
-		
+			<img class="profile-pic" src="{{product.product_image.url}}" >	
 		</div>
 	</div>
 	<div class="col-md-9">
-		<div class="card card-body">
-			
-			<form method="POST" action="" enctype="multipart/form-data">
+		<div class="card card-body">		
+			{% if messages %}
+				{% for message in messages %}
+					{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}			
+						<div class="alert alert-success" role="alert">
+							<p style="text-align: center;">{{ message }}</p>
+						</div>			
+					{% else %}
+						<div style="text-align: center;" class="alert alert-warning" role="alert">
+							{{ message }}
+						</div>
+					{% endif %}
+				{% endfor %}
+			{% endif %}			
+			<form method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
-				{{form.as_p}}
-		
+				{{form.as_p}}	
 			<input class="btn btn-primary" type="submit" name="Update Information">
 			</form>
 		</div>
 	</div>
 </div>
-{% endblock content %}
+{% endblock %}

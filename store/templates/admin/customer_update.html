@@ -1,24 +1,30 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block content %}
+{% block update_customer %}
+<style>
+  #update-btn{
+    width: 100%;
+    /* background-color: blue; */
+  }
+</style>
 <title>foodApp: Customer</title>
 <script>
     function goBack() {
         window.history.back();
     }
 </script>
+<br>
 <div class="container">
     <div class="main-body">
           <!-- Breadcrumb -->
           <nav aria-label="breadcrumb" class="main-breadcrumb">
             <ol class="breadcrumb">
               <li style="cursor: pointer;" class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Customer List</li>
+              <a href="{% url 'list-customer' %}" class="breadcrumb-item active" aria-current="page">Customer List</a>
               <li class="breadcrumb-item active" aria-current="page">Customer Profile</li>
             </ol>
           </nav>
           <!-- /Breadcrumb -->
-    
           <div class="row gutters-sm">
             <div class="col-md-4 mb-3">
               <div class="card">
@@ -27,10 +33,6 @@
                     <img src="{{customer.profile_image.url}}" alt=":(" class="rounded-circle" width="150">
                     <div class="mt-3">
                       <h4>{{customer.user.username}}</h4>
-                      <p class="text-secondary mb-1">{{customer.phone}}</p>
-                      <p class="text-muted font-size-sm">{{customer.user.email}}</p>
-                      <a class="btn btn-primary" href="{% url 'customer-details' customer.id %}">Update Profile</a>
-                      <!-- <button class="btn btn-outline-primary">Change Password</button> -->
                     </div>
                   </div>
                 </div>
@@ -47,84 +49,71 @@
                                 </div>			
                             {% else %}
                                 <div style="text-align: center;" class="alert alert-warning" role="alert">
-                                    {{ form.username.errors | striptags }}
-                                    {{ form.password2.errors | striptags }}
                                     {{ message }}
                                 </div>
                             {% endif %}
                         {% endfor %}
                     {% endif %}		
-                    <form method='post'>
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+                        <select name="user" hidden>
+                            <option value="{{customer.user.id}}"></option>
+                        </select>
+                        <!-- <input value="{{customer.user.id}}" hidden> -->
                         <div class="row">                
                             <div class="col-sm-3">
-                                <h6 class="mb-0">Full Name</h6>
+                                <h6 class="mb-0">Phone</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
-                                {{ form.username }}
+                                <input value="{{customer.phone}}" name="phone" type="text">
                             </div>
                         </div><hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <h6 class="mb-0">Email</h6>
+                                <h6 class="mb-0">Gender</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
-                                {{ form.email }}
+                                <select name="gender">
+                                    {% if customer.gender == 'Male' %}
+                                      <option selected value="Male">Male</option>
+                                      <option value="Female">Female</option>
+                                    {% else %}
+                                      <option selected value="Female">Female</option>
+                                      <option value="Male">Male</option>
+                                    {% endif %}                                 
+                                </select>
                             </div>
                         </div><hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <h6 class="mb-0">New-Password</h6>
+                                <h6 class="mb-0">Upload Image</h6>
                             </div>
-                            <div class="col-sm-9 text-secondary">
-                                {{ form.password1 }}
-                            </div>
+                            {{ form.profile_image }}
                         </div><hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <h6 class="mb-0">Confirm-Password</h6>
-                            </div>
-                            <div class="col-sm-9 text-secondary">
-                                {{ form.password2 }}
-                            </div>
-                        </div><hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <h6 class="mb-0">Joined Date</h6>
-                            </div>
-                          <div class="col-sm-9 text-secondary">
-                                {{ user.date_joined }}
-                          </div>
-                        </div><hr>
-                        <button class="btn btn-outline-primary">Update User</button>
+                        <button id='update-btn' type="submit" class="btn btn-primary">Update User</button>
                     </form>
                 </div>
               </div>
               <div class="row gutters-sm">
-                <div class="col-sm-6 mb-3">
+                <!-- <div class="col-sm-6 mb-3">
                   <div class="card h-100">
                     <div class="card-body">
-                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">Total Order</i>:<h1>{{total_orders}}</h1></h6>
+                      <h6 class="d-flex align-items-center mb-3">
+                        <i class="material-icons text-info mr-2">Total Order</i>:<h1>{{form}}</h1></h6>
                     </div>
                   </div>
-                </div>
-                <div class="col-sm-6 mb-3"> 
+                </div> -->
+                <!-- <div class="col-sm-6 mb-3"> 
                   <div class="card h-100">
                     <div class="card-body">
-                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">Total Spending</i>:<h1>฿</h6>
+                      <h6 class="d-flex align-items-center mb-3">
+                        <i class="material-icons text-info mr-2">Total Spending</i>:<h1>฿</h6>
                       </div>
                   </div>
-                </div>
+                </div> -->
               </div>
-
-
-
             </div>
           </div>
-
         </div>
     </div>
-
-
-
-{% endblock content %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block delete_order %}
+<title>foodApp: Delete Product</title>
+
+<br>
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Order List</li>
+      <li class="breadcrumb-item active" aria-current="page">Delete Order</li>
+    </ol>
+</nav><hr>
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+<p>Are you sure you wanna delete the order ? "{{order.id}}"</p>
+
+<form action="{% url 'delete-order' order.id %}" method="POST">
+    {% csrf_token %}
+    <a href="{% url 'adminOrderlist' %}">Cancel</a>
+    <input type="submit" name="Confirm">
+</form>
+{% endblock %}

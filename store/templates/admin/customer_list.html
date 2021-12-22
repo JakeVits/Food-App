@@ -1,8 +1,7 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block content %}
+{% block list_customer %}
 <title>foodApp: View Customer</title>
-
 <style>
     .button {
       display: inline-block;
@@ -27,6 +26,7 @@
       transform: translateY(4px);
     }
 </style>
+<br>
 <nav aria-label="breadcrumb" class="main-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
@@ -50,25 +50,25 @@
 				</tr>
 				{% for customer in customers %}
             <tr>
-              <td>{{customer.user.username}}</td>
-              <td>{{customer.user.email}}</td>
-              {% if customer.phone %}
-                  <td>{{customer.phone}}</td>
-              {% else %}
-                  <td>--------</td>
-              {% endif %}
-              {% if customer.gender %}
-                  <td>{{customer.gender}}</td>
-              {% else %}
-                  <td>--------</td>
-              {% endif %}
-              <td>{{customer.date_created}}</td>
-              <td><a class="btn btn-sm btn-info" href="{% url 'customer-details' customer.id %}">View</a></td>
-              <td><a class="btn btn-sm btn-primary" href="{% url 'update-customer' customer.id %}">Update</a></td>       
-              <td><a class="btn btn-sm btn-danger" href="{% url 'delete-customer' customer.id %}">Delete</a></td>
+                <td>{{customer.user.username}}</td>
+                <td>{{customer.user.email}}</td>
+                {% if customer.phone %}
+                    <td>{{customer.phone}}</td>
+                {% else %}
+                    <td>--------</td>
+                {% endif %}
+                {% if customer.gender %}
+                    <td>{{customer.gender}}</td>
+                {% else %}
+                    <td>--------</td>
+                {% endif %}
+                <td>{{customer.user.date_joined}}</td>
+                <td><a class="btn btn-sm btn-info" href="{% url 'view-customer' customer.user.id %}">View</a></td>
+                <td><a class="btn btn-sm btn-primary" href="{% url 'update-customer' customer.user.id %}">Update</a></td>       
+                <td><a class="btn btn-sm btn-danger" href="{% url 'delete-customer' customer.user.id %}">Delete</a></td>
             </tr>
 				{% endfor %}
-        <a class="btn btn-primary btn-block text-uppercase" href="{% url 'add-customer' %}">Add Customer</a>
+        <a class="btn btn-primary btn-block text-uppercase" href="{% url 'create-customer' %}">Add Customer</a>
         <hr>
 			</table>
 		</div>
@@ -79,4 +79,4 @@
     window.history.back();
   }
 </script>
-{% endblock content %}
+{% endblock %}

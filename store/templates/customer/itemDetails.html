@@ -1,0 +1,64 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block item_details %}
+<title>foodApp: Order History</title>
+
+<style>
+    .button {
+      display: inline-block;
+      padding: 3px 20px;
+      font-size: 24px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      outline: none;
+      color: #fff;
+      background-color: #050101;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 9px #999;
+    }
+    
+    .button:hover {background-color: #a5aca5}
+    
+    .button:active {
+      background-color: #121312;
+      box-shadow: 0 5px #666;
+      transform: translateY(4px);
+    }
+</style>
+<br>
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Order History List</li>
+  </ol>
+</nav><hr>
+
+<script>
+  function goBack() {
+      window.history.back();
+  }
+</script>
+  <div class="row">
+    <div class="col-md">
+      <div class="card card-body">
+        <table class="table table-sm">
+            <tr>
+                <th>Product Title</th>
+                <th>Quantity</th>
+                <th>Image</th>
+            </tr>
+            {% for item, quantity in items %}       
+              <tr>
+                <td>{{item.product.name}}</td>
+                <td>{{quantity.quantity}}</td>
+                <td><img src="{{item.product.product_image.url}}" width="80px" height="50px"></img></td>
+              </tr>
+            {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div><br>
+
+{% endblock %}

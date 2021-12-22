@@ -1,0 +1,61 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block update_order %}
+
+<title>foodApp: Update Product</title>
+<script>
+    function goBack() {
+      window.history.back();
+    }
+</script>
+<style>
+	.profile-pic{
+		max-width: 200px;
+		max-height:200px;
+		margin: 0 auto;
+		border-radius: 50%;
+	}
+</style>
+
+<br>
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a onclick="goBack()">Back</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Product List</li>
+      <li class="breadcrumb-item active" aria-current="page">Product Details </li>
+      <li class="breadcrumb-item active" aria-current="page">Update Product</li>
+    </ol>
+  </nav>
+<div class="row">
+    
+	<div class="col-md-3">
+		<div class="card card-body">
+			<h4 style="text-align: center">Update Product</h4>
+			<hr>
+			<img class="profile-pic" src="{{product.product_image.url}}" >	
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div class="card card-body">		
+			{% if messages %}
+				{% for message in messages %}
+					{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}			
+						<div class="alert alert-success" role="alert">
+							<p style="text-align: center;">{{ message }}</p>
+						</div>			
+					{% else %}
+						<div style="text-align: center;" class="alert alert-warning" role="alert">
+							{{ message }}
+						</div>
+					{% endif %}
+				{% endfor %}
+			{% endif %}			
+			<form method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{form.as_p}}	
+			<input class="btn btn-primary" type="submit" name="Update Information">
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

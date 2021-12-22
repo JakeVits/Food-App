@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+from django.db.models.base import Model
+from django.db.models.deletion import CASCADE, SET_NULL
+from django.db.models.expressions import F
 from django.urls import reverse
+from django.core.validators import RegexValidator
 # Create your models here.
 
 class Customer(models.Model):
@@ -9,113 +13,138 @@ class Customer(models.Model):
         ('Male', 'Male'),
         ('Female', 'Female'),
     )
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    # name = models.CharField(max_length=200, null=True)
-    # email = models.CharField(max_length=200, null=True)
-    phone = models.CharField(max_length=200, null=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    profile_image = models.ImageField(upload_to='customer-image', default="customer-image/profile.png", null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    phone = models.CharField(validators=[RegexValidator(regex=r"^\+?1?\d{8,15}$")], max_length=16, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True)
+    profile_image = models.ImageField(upload_to='customer-image', default="customer-image/profile.png", null=True)
 
     def __str__(self):
         return self.user.username
-        
-    # @property
-    # def profileimageURL(self):
-    #     try:
-    #         url = self.profile_image.url
-    #     except:
-    #         url = ''
-    #     return url
+
 
 class Product(models.Model):
     seller = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    price = models.FloatField()
-    description = models.TextField()
-    # digital = models.BooleanField(default=False, null=True, blank=False)
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(max_length=500)
     product_image = models.ImageField(upload_to='product-image')
-    date_added = models.DateTimeField(auto_now_add=True)
-    date_delivery = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
-    date_closed = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
-
+    closed_date = models.DateField(null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    
     def __str__(self):
         return self.name
 
-    # @property
-    # def imageURL(self):
-    #     try:
-    #         url = self.product_image.url
-    #     except:
-    #         url = ''
-    #     return url
+
+class Cart(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.product.name
+
+    @property
+    def get_total_items(self):
+        total = 0
+        items = Cart.objects.filter(customer=self.customer).values('quantity') # returns as a dictionary
+        for item in items:
+            total += item['quantity']
+        return total
+
+    @property
+    def get_total_price(self):
+        price = 0
+        products = Cart.objects.filter(customer=self.customer) # returns as a dictionary
+        for item in products:
+            price += item.product.price * item.quantity
+        return price
+
 
 class Order(models.Model):
     STATUS = (
         ('Pending', 'Pending'),
-        ('Out Of Delivery', 'Out Of Delivery'),
-        ('Delivered','Delivered')
+        ('Delivered','Delivered'),
+        ('Cancelled', 'Cancelled')       
     )
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    date_ordered = models.DateTimeField(auto_now_add=True)
-    complete = models.BooleanField(default=False, null=True, blank=False)
-    transaction_id = models.CharField(max_length=200, null=True)
-    status = models.CharField(max_length=200, choices=STATUS)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
+    address = models.CharField(max_length=50)
+    city = models.CharField(max_length=20)
+    state = models.CharField(max_length=20)
+    zipcode = models.CharField(max_length=10)
+    country = models.CharField(max_length=30)
+    ordered_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS)
+    
+    def __str__(self):
+        return f'Ordered ID = {str(self.id)}, Customer = {self.customer.user.username}'
+
+
+class Item(models.Model):
+    order = models.ForeignKey(Order, on_delete=CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=SET_NULL, null=True)
+    
+    def __str__(self):
+        return f'{self.order.customer} ordered {self.product.name}'
+
+class Quantity(models.Model):
+    item = models.OneToOneField(Item, on_delete=CASCADE, null=True)
+    quantity = models.IntegerField(null=True)
 
     def __str__(self):
-        return str(self.id)
+        return f"{self.item.product.name} Quantity = {str(self.quantity)}"
 
-    @property
-    def shipping(self):
-        shipping = False
-        orderitems = self.orderitem_set.all()
-        for i in orderitems:
-            if i.product.digital == False:
-                shipping = True
-        return shipping
 
-    @property
-    def get_cart_total(self):
-        orderitems = self.orderitem_set.all()
-        total = sum ([item.get_total for item in orderitems])
-        return total
 
-    @property
-    def get_cart_items(self):
-        orderitems = self.orderitem_set.all()
-        total = sum ([item.quantity for item in orderitems])
-        return total
+    # @property
+    # def shipping(self):
+    #     shipping = False
+    #     orderitems = self.orderitem_set.all()
+    #     for i in orderitems:
+    #         if i.product.digital == False:
+    #             shipping = True
+    #     return shipping
 
-class OrderItem(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
-    quantity = models.IntegerField(default=0, null=True, blank=True)
-    date_added = models.DateTimeField(auto_now_add=True)
+    # @property
+    # def get_cart_total(self):
+    #     orderitems = self.orderitem_set.all()
+    #     total = sum ([item.get_total for item in orderitems])
+    #     return total
 
-    @property
-    def get_total(self):
-        total = self.product.price * self.quantity
-        return total
+    # @property
+    # def get_cart_items(self):
+    #     orderitems = self.orderitem_set.all()
+    #     total = sum ([item.quantity for item in orderitems])
+    #     return total
 
-class ShippingAddress(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
-    address = models.CharField(max_length=200, null=True)
-    city = models.CharField(max_length=200, null=True)
-    state = models.CharField(max_length=200, null=True)
-    zipcode = models.CharField(max_length=200, null=True)
-    date_added = models.DateTimeField(auto_now_add=True)
+# class OrderItem(models.Model):
+#     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+#     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
+#     quantity = models.IntegerField(default=0, null=True, blank=True)
+#     date_added = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.address
+#     @property
+#     def get_total(self):
+#         total = self.product.price * self.quantity
+#         return total
 
-    @property
-    def shipping(self):
-        shipping = False
-        orderitems = self.orderitem_set.all()
-        for i in orderitems:
-            if i.product.digital == False:
-                shipping = True
-        return shipping
+# class ShippingAddress(models.Model):
+#     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
+#     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
+#     address = models.CharField(max_length=50)
+#     city = models.CharField(max_length=20)
+#     state = models.CharField(max_length=20)
+#     zipcode = models.CharField(max_length=10)
+#     added_date = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return self.address
+
+    # @property
+    # def shipping(self):
+    #     shipping = False
+    #     orderitems = self.orderitem_set.all()
+    #     for i in orderitems:
+    #         if i.product.digital == False:
+    #             shipping = True
+    #     return shipping

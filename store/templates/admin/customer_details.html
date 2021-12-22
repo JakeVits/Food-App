@@ -1,6 +1,6 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block content %}
+{% block view_customer %}
 
 <title>foodApp: Customer Edit</title>
 <script>
@@ -15,6 +15,10 @@
 		margin: 0 auto;
 		border-radius: 50%;
 	}
+	.customer-info span{
+		float: right;
+	}
+
 </style>
 <br>
 <nav aria-label="breadcrumb" class="main-breadcrumb">
@@ -26,23 +30,29 @@
     </ol>
   </nav>
 <div class="row">
-    
 	<div class="col-md-3">
-		<div class="card card-body">
-			<h4 style="text-align: center">Customer: Edit</h4>
-			<hr>
-			<img class="profile-pic" src="{{customer.profile_image.url}}" alt=":(" width="150"><br>
-			<button class="btn btn-outline-primary">Change Password</button>
+		<div class="card card-body" style="width: 500px; padding-bottom: 50px; margin-left: 300px">
+			<h4 style="text-align: center">Customer: {{customer.user.username}}</h4><hr>
+			<img class="profile-pic" src="{{customer.profile_image.url}}" alt=":(" width="150"><br>	
+			<div class="customer-info">
+				<p>Username<span>{{customer.user.username}}</span></p>
+				<p>Email<span>{{customer.user.email}}</span></p>
+				<p>Gender<span>{{customer.gender}}</span></p>
+				<p>Phone-Number<span>{{customer.phone}}</span></p>
+			</div>
 		</div>
 	</div>
-	<div class="col-md-9">
-		<div class="card card-body">
-			<form method="POST" action="" enctype="multipart/form-data">
-				{% csrf_token %}
-				{{form.as_p}}	
-				<input class="btn btn-primary" type="submit" name="Update Information">
-			</form>
-		</div>
-	</div>
+
 </div>
-{% endblock content %}
+{% endblock %}
+<!-- <div class="col-md-9">
+	<div class="card card-body">
+		
+	</div>
+</div> -->
+<!-- <button class="btn btn-outline-primary">Update Profile</button> -->
+<!-- <form method="POST" action="" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{form.as_p}}	
+	<input class="btn btn-primary" type="submit" name="Update Information">
+</form> -->
